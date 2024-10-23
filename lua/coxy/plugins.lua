@@ -19,7 +19,6 @@ return require('packer').startup(function(use)
     -- Colour Schemes
     use {
         'Mofiqul/vscode.nvim',
-        as = 'vscode',
         config = vim.cmd('colorscheme vscode')
     }
 
