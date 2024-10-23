@@ -13,7 +13,7 @@ M.attach = function(client, bufnr)
     vim.keymap.set('n', '<leader>vrn', function() vim.lsp.buf.rename() end, opts)
 
     vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end, opts)
-    vim.keymap.set('i', '<C-H>', function() vim.lsp.buf.signature_help() end, opts)
+    vim.keymap.set('i', '<C-h>', function() vim.lsp.buf.signature_help() end, opts)
 end
 
 return M.attach
