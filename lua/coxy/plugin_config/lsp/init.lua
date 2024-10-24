@@ -3,6 +3,7 @@ local lsp_zero = require('lsp-zero')
 -- Import other LSP-related modules
 local attach = require('coxy.plugin_config.lsp.attach')
 
+
 -- LSP setup
 lsp_zero.extend_lspconfig({
     sign_text = true,
@@ -13,3 +14,13 @@ lsp_zero.extend_lspconfig({
 require('coxy.plugin_config.lsp.mason')
 require('coxy.plugin_config.lsp.cmp')
 
+-- Setup lua language server specifically
+require('lspconfig').lua_ls.setup({
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { 'vim' },  -- Recognise the `vim` global
+            },
+        },
+    },
+})
