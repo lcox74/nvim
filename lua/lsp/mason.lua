@@ -1,17 +1,17 @@
 ---@meta
---- Handles the setup of Mason and the installation of LSP servers.
---- Ensures required servers are installed and configured via Mason.
+--- Handles Mason setup and ensures required LSP servers are installed.
+return function()
+    local mason = require("mason")
+    local mason_lspconfig = require("mason-lspconfig")
+    local lspconfig = require("lspconfig")
 
----@param lsp_zero table The LSP Zero preset instance.
-return function(lsp_zero)
-    require("mason").setup()
-    require("mason-lspconfig").setup({
-        handlers = {
-            function(server_name)
-                require("lspconfig")[server_name].setup({
-                    capabilities = lsp_zero:get_capabilities(),
-                })
-            end,
-        },
+    mason.setup()
+    mason_lspconfig.setup_handlers({
+        function(server_name)
+            lspconfig[server_name].setup({
+                capabilities = require("cmp_nvim_lsp").default_capabilities(),
+                on_attach = require("lsp.attach"),
+            })
+        end,
     })
 end

@@ -2,8 +2,7 @@
 --- Configures language-specific settings for LSP servers.
 --- Includes custom configurations for Lua, GDScript, and Go.
 
----@param lsp_zero table The LSP Zero preset instance.
-return function(lsp_zero)
+return function()
     local lspconfig = require("lspconfig")
 
     -- Lua
@@ -13,11 +12,6 @@ return function(lsp_zero)
                 diagnostics = { globals = { "vim" } },
             },
         },
-    })
-
-    -- GDScript
-    lspconfig.gdscript.setup({
-        capabilities = lsp_zero:get_capabilities(),
     })
 
     -- Go
