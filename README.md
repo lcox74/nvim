@@ -1,21 +1,15 @@
 # Neovim Config
 
-This is my config for nvim setup. I've been forcing myself to use neovim more 
-as another tool to develop. I want to make this easy to install on all the 
-machines I do development work on. I will probably update this every so often
-depending on how comfortable I get with it.
+This is my configuration for Neovim. I've been gradually adopting Neovim as an integral part of my development workflow. The goal of this repository is to make it easy to install and maintain my Neovim setup across multiple development machines. I will continue to update and refine this configuration as I become more comfortable with Neovim.
 
 ```bash
 # Install required packages
-apt install neovim ripgrep
-
-# Install Package Manager
-git clone --depth 1 https://github.com/wbthomason/packer.nvim\
- ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+sudo apt update
+sudo apt install -y neovim ripgrep git
 
 # Create Neovim config directory if it doesn't exist
 mkdir -p ~/.config/nvim
 
-# Install all the packages
-nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+# Install the config
+git clone https://github.com/lcox74/nvim.git ~/.config/nvim
 ```
