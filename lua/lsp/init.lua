@@ -8,6 +8,7 @@ function M.setup()
     -- Core LSP setup
     require("lsp.mason")()         -- Mason setup
     require("lsp.languages")()     -- Language-specific configurations
+    require("lsp.snippets")()      -- Snippet settings
     require("lsp.cmp")()           -- Autocompletion setup
     require("lsp.diagnostics")()   -- Diagnostics settings
 end

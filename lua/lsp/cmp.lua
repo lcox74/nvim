@@ -6,11 +6,12 @@ return function()
     local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
     cmp.setup({
-        sources = {
+        sources = cmp.config.sources({
             { name = "nvim_lsp" },
             { name = "buffer" },
             { name = "path" },
-        },
+            { name = "luasnip" },
+        }),
         snippet = {
             expand = function(args)
                 require("luasnip").lsp_expand(args.body)
