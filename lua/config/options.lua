@@ -2,9 +2,6 @@
 vim.g.mapleader = " "        -- Set <leader> to space
 vim.g.maplocalleader = " "   -- Set local leader to space
 
--- -- Set the colorscheme
--- vim.cmd.colorscheme("tokyonight")
-
 -- Line numbers
 vim.opt.number = true         -- Show absolute line numbers
 vim.opt.relativenumber = true -- Show relative line numbers
