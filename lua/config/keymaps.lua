@@ -49,6 +49,6 @@ vim.keymap.set('n', '<leader>Q', '<Cmd>qa!<CR>', { desc = "Close all windows wit
 vim.keymap.set('n', '<leader>w', '<Cmd>w<CR>', { desc = "Save current buffer" })
 
 -- Buffers
-vim.keymap.set('n', '<A-,>', '<Cmd>BufferPrevious<CR>', { desc = "Previous buffer" })
-vim.keymap.set('n', '<A-.>', '<Cmd>BufferNext<CR>', { desc = "Next buffer" })
-vim.keymap.set('n', '<A-c>', '<Cmd>BufferClose<CR>', { desc = "Close buffer" })
+vim.keymap.set("n", "<leader>.", ":bnext<CR>", { desc = "Next Buffer" })
+vim.keymap.set("n", "<leader>,", ":bprevious<CR>", { desc = "Previous Buffer" })
+vim.keymap.set("n", "<leader>bd", ":bdelete<CR>", { desc = "Delete Buffer" })
