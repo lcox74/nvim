@@ -21,5 +21,8 @@ return {
         { "ray-x/guihua.lua" },
 
     },
-    config = require("lsp").setup(),
+    config = function() 
+        local lsp = require("lsp")
+        lsp.setup()
+    end,
 }
