@@ -4,8 +4,8 @@ vim.opt.relativenumber = true
 
 -- Indentation
 vim.opt.expandtab = true
-vim.opt.shiftwidth = 2
-vim.opt.tabstop = 2
+vim.opt.shiftwidth = 4
+vim.opt.tabstop = 4
 
 -- UI
 vim.opt.signcolumn = "yes"
@@ -32,7 +32,7 @@ vim.opt.incsearch = true  -- Show incremental search results
 
 -- Appearance
 vim.opt.guicursor = ""      -- Use block cursor for all modes
-vim.opt.colorcolumn = "80"  -- Highlight column 80 for coding guidelines
+vim.opt.colorcolumn = "80,120"  -- Highlight column 80 for coding guidelines
 vim.opt.scrolloff = 8       -- Keep 8 lines visible above/below cursor
 vim.opt.sidescrolloff = 8   -- Keep 8 columns visible left/right of cursor
 
