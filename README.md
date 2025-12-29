@@ -17,6 +17,27 @@ brew install neovim --HEAD
 
 LSP servers and formatters are detected at runtime - install whatever you need externally (or use Mason inside Neovim).
 
+To install for debian is a mild pain because of the nightly build, though this
+should be handled better shortly.
+
+```sh
+# Get the host ready to install nvim
+apt update
+apt install -y git curl build-essential unzip ripgrep fd-find nodejs npm
+
+# Alias fd
+echo 'alias fd=fdfind' >> ~/.bashrc
+source ~/.bashrc
+
+# Install nvim
+curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.appimage
+chmod u+x nvim-linux-x86_64.appimage
+./nvim-linux-x86_64.appimage --appimage-extract
+mv squashfs-root /opt/nvim
+ln -s /opt/nvim/usr/bin/nvim /usr/local/bin/nvim
+rm nvim-linux-x86_64.appimage
+```
+
 ## Health Check
 
 Verify your setup with the built-in health check:
