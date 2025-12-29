@@ -1,2 +1,5 @@
-plugin/packer_compiled.lua
 .DS_Store
+.vscode
+
+local.lua
+.nvim.lua

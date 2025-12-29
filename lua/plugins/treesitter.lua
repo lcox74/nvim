@@ -1,24 +1,27 @@
-return {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    opts = {
-        -- A list of parser names, or "all" (the listed parsers MUST always be installed)
-        ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "javascript", "typescript", "go" },
+local ok, configs = pcall(require, "nvim-treesitter.configs")
+if not ok then
+    return
+end
 
-        highlight = {
-            enable = true,
-            -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-            -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-            -- Using this option may slow down your editor, and you may see some duplicate highlights.
-            -- Instead of true it can also be a list of languages
-            additional_vim_regex_highlighting = false,
-        },
+configs.setup({
+    ensure_installed = {
+        "go",
+        "lua",
 
-        -- Install parsers synchronously (only applied to `ensure_installed`)
-        sync_install = false,
+        -- Web
+        "javascript",
+        "typescript",
+        "html",
+        "css",
 
-        -- Automatically install missing parsers when entering buffer
-        -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-        auto_install = true,
+        "bash",
+        "json",
+        "yaml",
+        "markdown",
     },
-}
+
+    auto_install = false, -- Run :TSUpdate manually after adding new parsers
+
+    highlight = { enable = true },
+    indent = { enable = true },
+})
