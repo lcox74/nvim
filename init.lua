@@ -9,6 +9,7 @@ require("plugins.colourscheme")
 require("plugins.telescope")
 require("plugins.treesitter")
 require("plugins.barbar")
+require("plugins.pack")
 
 -- Mason (must run before LSP to prepend PATH)
 require("plugins.mason")
