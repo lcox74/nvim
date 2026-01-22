@@ -1,4 +1,5 @@
 local host = vim.g.host or {}
+local map = require("core.map").map
 
 -- Hard disable (host-level)
 if host.disable_lsp then
@@ -30,62 +31,66 @@ vim.api.nvim_create_autocmd("LspAttach", {
             vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
         end
 
-        -- Keymaps
-        local function map(mode, lhs, rhs, desc)
-            vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+        -- Buffer-local keymap helper
+        local function bmap(mode, lhs, rhs, desc)
+            map(mode, lhs, rhs, { buffer = bufnr, desc = desc })
         end
 
         -- Navigation and references
-        map("n", "gd", vim.lsp.buf.definition, "Go to definition")
-        map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
-        map("n", "gr", vim.lsp.buf.references, "Find references")
-        map("n", "gi", vim.lsp.buf.implementation, "Go to implementation")
+        bmap("n", "gd", vim.lsp.buf.definition, "Go to definition")
+        bmap("n", "gr", vim.lsp.buf.references, "Find references")
+
+        if client and client:supports_method("textDocument/declaration") then
+            bmap("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
+        end
+        if client and client:supports_method("textDocument/implementation") then
+            bmap("n", "gi", vim.lsp.buf.implementation, "Go to implementation")
+        end
+        if client and client:supports_method("textDocument/typeDefinition") then
+            bmap("n", "gy", vim.lsp.buf.type_definition, "Go to type definition")
+        end
 
         -- Diagnostics
-        map("n", "[d", vim.diagnostic.goto_prev, "Previous diagnostic")
-        map("n", "]d", vim.diagnostic.goto_next, "Next diagnostic")
-        map("n", "gl", vim.diagnostic.open_float, "Show diagnostic")
+        local diag_prev = function() vim.diagnostic.jump({ count = -1 }) end
+        local diag_next = function() vim.diagnostic.jump({ count = 1 }) end
+
+        bmap("n", "[d", diag_prev, "Previous diagnostic")
+        bmap("n", "]d", diag_next, "Next diagnostic")
+        bmap("n", "gl", vim.diagnostic.open_float, "Show diagnostic")
 
         -- Code actions
-        map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
-        map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+        bmap("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
+        bmap("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+
+        -- Symbols
+        if client and client:supports_method("textDocument/documentSymbol") then
+            bmap("n", "<leader>ds", vim.lsp.buf.document_symbol, "Document symbols")
+        end
+        if client and client:supports_method("workspace/symbol") then
+            bmap("n", "<leader>ws", vim.lsp.buf.workspace_symbol, "Workspace symbols")
+        end
+
+        -- Formatting
+        bmap("n", "<leader>f", vim.lsp.buf.format, "Format buffer")
+
+        -- Inlay hints toggle
+        bmap("n", "<leader>ih", function()
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+        end, "Toggle inlay hints")
 
         -- Hover and signature help
-        map("n", "K", vim.lsp.buf.hover, "Hover documentation")
-        map("i", "<C-s>", vim.lsp.buf.signature_help, "Signature help")
+        bmap("n", "K", vim.lsp.buf.hover, "Hover documentation")
+        bmap("i", "<C-s>", vim.lsp.buf.signature_help, "Signature help")
     end,
 })
 
--- LSP server configurations
--- Each entry: { name, config, executable }
-local servers = {
-    -- Complex configs (separate files)
-    { "gopls", require("lsp.go"), "gopls" },
-    { "lua_ls", require("lsp.lua"), "lua-language-server" },
-
-    { "ts_ls", {
-        cmd = { "typescript-language-server", "--stdio" },
-        filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-        root_markers = { "tsconfig.json", "package.json", ".git" },
-    }, "typescript-language-server" },
-
-    { "html", {
-        cmd = { "vscode-html-language-server", "--stdio" },
-        filetypes = { "html" },
-        root_markers = { ".git" },
-    }, "vscode-html-language-server" },
-
-    { "cssls", {
-        cmd = { "vscode-css-language-server", "--stdio" },
-        filetypes = { "css", "scss" },
-        root_markers = { ".git" },
-    }, "vscode-css-language-server" },
-}
-
-for _, server in ipairs(servers) do
-    local name, config, cmd = server[1], server[2], server[3]
-    if vim.fn.executable(cmd) == 1 then
-        vim.lsp.config[name] = config
-        vim.lsp.enable(name)
+-- Load and enable LSP servers from servers/ directory
+local servers_path = vim.fn.stdpath("config") .. "/lua/lsp/servers"
+for _, file in ipairs(vim.fn.glob(servers_path .. "/*.lua", false, true)) do
+    local module_name = "lsp.servers." .. vim.fn.fnamemodify(file, ":t:r")
+    local server = require(module_name)
+    if vim.fn.executable(server.cmd) == 1 then
+        vim.lsp.config[server.name] = server.config
+        vim.lsp.enable(server.name)
     end
 end

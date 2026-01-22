@@ -3,11 +3,7 @@ if not ok then
     return
 end
 
-local opts = { silent = true }
-
-local function map(mode, lhs, rhs, desc)
-    vim.keymap.set(mode, lhs, rhs, vim.tbl_extend("force", opts, { desc = desc }))
-end
+local map = require("core.map").map
 
 -- Buffer navigation
 map("n", "<Tab>", "<Cmd>BufferNext<CR>", "Next buffer")

@@ -2,6 +2,8 @@ if not vim.pack then
     return
 end
 
+local map = require("core.map").map
+
 -- Helper: get formatted package list
 local function get_package_list()
     local packages = vim.pack.get()
@@ -27,16 +29,26 @@ end, { desc = "List vim.pack packages" })
 
 -- :PackPicker (Telescope)
 vim.api.nvim_create_user_command("PackPicker", function()
-    local ok, pickers = pcall(require, "telescope.pickers")
-    local ok2, finders = pcall(require, "telescope.finders")
-    local ok3, conf = pcall(require, "telescope.config")
-    local ok4, actions = pcall(require, "telescope.actions")
-    local ok5, action_state = pcall(require, "telescope.actions.state")
+    local telescope_ok, telescope_modules = pcall(function()
+        return {
+            pickers = require("telescope.pickers"),
+            finders = require("telescope.finders"),
+            conf = require("telescope.config"),
+            actions = require("telescope.actions"),
+            action_state = require("telescope.actions.state"),
+        }
+    end)
 
-    if not (ok and ok2 and ok3 and ok4 and ok5) then
+    if not telescope_ok then
         vim.notify("Telescope not available", vim.log.levels.WARN)
         return
     end
+
+    local pickers = telescope_modules.pickers
+    local finders = telescope_modules.finders
+    local conf = telescope_modules.conf
+    local actions = telescope_modules.actions
+    local action_state = telescope_modules.action_state
 
     local packages = get_package_list()
 
@@ -159,4 +171,4 @@ end, {
 })
 
 -- Keymap
-vim.keymap.set("n", "<leader>fp", "<cmd>PackPicker<cr>", { desc = "Find packages" })
+map("n", "<leader>fp", "<cmd>PackPicker<cr>", "Find packages")
