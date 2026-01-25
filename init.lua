@@ -1,11 +1,12 @@
 -- Core editor behavior
-require("core.loader").dir("core")
+require("lib.loader").dir("core")
 
 -- Plugins
 require("pack")
 
 -- Tooling
 require("lsp")
+require("lib.loader").dir("tools")
 
 -- Host-level overrides (gitignored)
 pcall(require, "local")

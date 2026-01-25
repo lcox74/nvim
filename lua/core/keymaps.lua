@@ -1,6 +1,6 @@
 vim.g.mapleader = " "
 
-local map = require("core.map").map
+local map = require("lib.map").map
 
 -- Disable accidental Ex mode
 map("n", "Q", "<nop>", "Disable Q command")

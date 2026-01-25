@@ -3,7 +3,7 @@ if not ok then
     return
 end
 
-local map = require("core.map").map
+local map = require("lib.map").map
 
 gitsigns.setup({
     signs = {

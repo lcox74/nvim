@@ -1,4 +1,4 @@
-local ac = require("core.autocmd")
+local ac = require("lib.autocmd")
 local autocmd = ac.autocmd
 local augroup = ac.augroup
 

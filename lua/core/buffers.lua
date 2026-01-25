@@ -1,4 +1,4 @@
-local map = require("core.map").map
+local map = require("lib.map").map
 
 -- Get list of listed buffers in order
 local function get_buffers()

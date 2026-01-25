@@ -1,6 +1,6 @@
 local host = vim.g.host or {}
-local map = require("core.map").map
-local loader = require("core.loader")
+local map = require("lib.map").map
+local loader = require("lib.loader")
 
 -- Hard disable (host-level)
 if host.disable_lsp then

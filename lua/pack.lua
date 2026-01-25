@@ -45,4 +45,4 @@ pack.add({
 })
 
 -- Load plugins from plugins/ directory
-require("core.loader").dir("plugins")
+require("lib.loader").dir("plugins")

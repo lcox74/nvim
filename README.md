@@ -52,7 +52,7 @@ rm nvim-linux-x86_64.appimage
 Verify your setup with the built-in health check:
 
 ```vim
-:checkhealth config
+:checkhealth wort
 ```
 
 This checks for required tools (`git`, `ripgrep`, `fd`).

@@ -16,7 +16,7 @@ if not ok_builtin then
     return
 end
 
-local map = require("core.map").map
+local map = require("lib.map").map
 
 map("n", "<leader>ff", builtin.find_files, "Find files")
 map("n", "<leader>fg", builtin.live_grep, "Live grep")
