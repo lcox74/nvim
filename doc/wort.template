@@ -1,0 +1,109 @@
+*wort.txt*      Neovim Configuration
+
+Author: lcox74                                                           *wort*
+Requires: Neovim 0.12+
+
+==============================================================================
+CONTENTS                                                        *wort-contents*
+
+  1. Introduction ............................ |wort-intro|
+  2. Keymaps ................................. |wort-keymaps|
+  3. Autocmds ................................ |wort-autocmds|
+  4. Plugins ................................. |wort-plugins|
+  5. LSP ..................................... |wort-lsp|
+  6. Commands ................................ |wort-commands|
+
+==============================================================================
+INTRODUCTION                                                       *wort-intro*
+
+Personal Neovim configuration using native features (vim.pack, vim.lsp) with
+minimal external dependencies. Philosophy: explicit, predictable, portable -
+missing tools skip gracefully rather than error.
+
+Structure~
+
+  init.lua            Entry point, loads modules in order
+  lua/core/           Core settings (options, keymaps, autocmds)
+  lua/pack.lua        Plugin declarations for vim.pack
+  lua/plugins/        Individual plugin configurations
+  lua/lsp/            LSP configuration and server definitions
+  lua/local.lua       Machine-specific overrides (gitignored)
+
+==============================================================================
+KEYMAPS                                                          *wort-keymaps*
+
+Leader key: <Space>
+Modes: n=normal, v=visual, x=select, i=insert, t=terminal
+Buffer-local keymaps marked with [buf]
+
+{{KEYMAPS}}
+
+==============================================================================
+AUTOCMDS                                                        *wort-autocmds*
+
+Automatic commands that run on specific events.
+Patterns shown in [brackets] when not matching all files.
+
+{{AUTOCMDS}}
+
+==============================================================================
+PLUGINS                                                          *wort-plugins*
+
+Plugins are managed via native |vim.pack|. Run `:PackList` to see installed
+packages or `:PackPicker` to browse with Telescope.
+
+Commands~
+
+  :PackList                                                        *:PackList*
+                        List all installed packages
+  :PackPicker                                                    *:PackPicker*
+                        Browse packages with Telescope
+  :PackStatus                                                    *:PackStatus*
+                        Show package count
+  :PackUpdate                                                    *:PackUpdate*
+                        Update all packages
+  :PackAdd {url}                                                    *:PackAdd*
+                        Add a package by URL
+  :PackDel {name}                                                   *:PackDel*
+                        Delete a package by name
+
+==============================================================================
+LSP                                                                  *wort-lsp*
+
+Language servers are configured in `lua/lsp/servers/`. Each server only
+activates if its executable is found in PATH.
+
+Commands~
+
+  :LspHealth                                                      *:LspHealth*
+                        Check installation status of all configured servers
+
+Adding a new server~
+
+  1. Add Mason package name to `ensure_installed` in `lua/plugins/mason.lua`
+  2. Create `lua/lsp/servers/{name}.lua` with config structure
+  3. Restart Neovim
+
+Server config structure:
+>lua
+  return {
+      name = "server_name",
+      cmd = "executable",
+      config = {
+          cmd = { "executable", "args" },
+          filetypes = { "filetype" },
+          root_markers = { ".git" },
+      }
+  }
+<
+
+==============================================================================
+COMMANDS                                                        *wort-commands*
+
+Configuration~
+
+  :checkhealth config
+                        Verify required tools are installed
+
+==============================================================================
+ vim:tw=78:ts=8:ft=help:norl:

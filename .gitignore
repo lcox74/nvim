@@ -3,3 +3,6 @@
 
 local.lua
 .nvim.lua
+
+doc/wort.txt
+doc/tags

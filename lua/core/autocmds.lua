@@ -1,18 +1,22 @@
-local augroup = vim.api.nvim_create_augroup
+local ac = require("core.autocmd")
+local autocmd = ac.autocmd
+local augroup = ac.augroup
 
 -- Highlight on yank
-vim.api.nvim_create_autocmd("TextYankPost", {
+augroup("yank-highlight", { clear = true })
+autocmd("TextYankPost", {
     desc = "Highlight when yanking (copying) text",
-    group = augroup("yank-highlight", { clear = true }),
+    group = "yank-highlight",
     callback = function()
         vim.highlight.on_yank({ timeout = 150 })
     end,
 })
 
 -- Format on save
-vim.api.nvim_create_autocmd("BufWritePre", {
+augroup("format-on-save", { clear = true })
+autocmd("BufWritePre", {
     desc = "Format buffer before saving",
-    group = augroup("format-on-save", { clear = true }),
+    group = "format-on-save",
     callback = function(ev)
         local host = vim.g.host or {}
         if host.disable_format then
@@ -31,9 +35,10 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 -- Restore cursor position when reopening files
-vim.api.nvim_create_autocmd("BufReadPost", {
+augroup("restore-cursor", { clear = true })
+autocmd("BufReadPost", {
     desc = "Restore cursor position when reopening files",
-    group = augroup("restore-cursor", { clear = true }),
+    group = "restore-cursor",
     callback = function()
         local mark = vim.api.nvim_buf_get_mark(0, '"')
         local line_count = vim.api.nvim_buf_line_count(0)
@@ -44,9 +49,10 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 })
 
 -- Close help, quickfix, man pages with 'q'
-vim.api.nvim_create_autocmd("FileType", {
+augroup("close-with-q", { clear = true })
+autocmd("FileType", {
     desc = "Close special buffers with q",
-    group = augroup("close-with-q", { clear = true }),
+    group = "close-with-q",
     pattern = { "help", "qf", "man", "lspinfo", "notify" },
     callback = function(event)
         vim.bo[event.buf].buflisted = false
@@ -55,18 +61,20 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Auto-resize splits when terminal window is resized
-vim.api.nvim_create_autocmd("VimResized", {
+augroup("resize-splits", { clear = true })
+autocmd("VimResized", {
     desc = "Auto-resize splits on terminal resize",
-    group = augroup("resize-splits", { clear = true }),
+    group = "resize-splits",
     callback = function()
         vim.cmd("tabdo wincmd =")
     end,
 })
 
 -- Check for external file changes on focus
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+augroup("checktime", { clear = true })
+autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
     desc = "Check for external file changes",
-    group = augroup("checktime", { clear = true }),
+    group = "checktime",
     callback = function()
         if vim.o.buftype ~= "nofile" then
             vim.cmd("checktime")
@@ -75,9 +83,10 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 })
 
 -- Trim trailing whitespace on save
-vim.api.nvim_create_autocmd("BufWritePre", {
+augroup("trim-whitespace", { clear = true })
+autocmd("BufWritePre", {
     desc = "Trim trailing whitespace on save",
-    group = augroup("trim-whitespace", { clear = true }),
+    group = "trim-whitespace",
     callback = function()
         local save_cursor = vim.fn.getpos(".")
         vim.cmd([[%s/\s\+$//e]])
@@ -86,9 +95,10 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 -- Auto-create parent directories when saving a new file
-vim.api.nvim_create_autocmd("BufWritePre", {
+augroup("auto-create-dir", { clear = true })
+autocmd("BufWritePre", {
     desc = "Auto-create parent directories",
-    group = augroup("auto-create-dir", { clear = true }),
+    group = "auto-create-dir",
     callback = function(event)
         if event.match:match("^%w%w+://") then
             return
@@ -100,9 +110,10 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 -- Show diagnostic float on cursor hold
-vim.api.nvim_create_autocmd("CursorHold", {
+augroup("diagnostic-float", { clear = true })
+autocmd("CursorHold", {
     desc = "Show diagnostic float on cursor hold",
-    group = augroup("diagnostic-float", { clear = true }),
+    group = "diagnostic-float",
     callback = function()
         local line = vim.api.nvim_win_get_cursor(0)[1] - 1
         local diagnostics = vim.diagnostic.get(0, { lnum = line })
@@ -113,19 +124,19 @@ vim.api.nvim_create_autocmd("CursorHold", {
 })
 
 -- Toggle relative line numbers based on mode
-local relative_numbers_group = augroup("relative-numbers", { clear = true })
+augroup("relative-numbers", { clear = true })
 
-vim.api.nvim_create_autocmd("InsertEnter", {
+autocmd("InsertEnter", {
     desc = "Use absolute line numbers in insert mode",
-    group = relative_numbers_group,
+    group = "relative-numbers",
     callback = function()
         vim.opt.relativenumber = false
     end,
 })
 
-vim.api.nvim_create_autocmd("InsertLeave", {
+autocmd("InsertLeave", {
     desc = "Use relative line numbers in normal mode",
-    group = relative_numbers_group,
+    group = "relative-numbers",
     callback = function()
         vim.opt.relativenumber = true
     end,

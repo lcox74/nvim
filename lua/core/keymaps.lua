@@ -63,3 +63,5 @@ end, "Edit LSP config")
 map("n", "<leader>cp", function()
     vim.cmd.edit(config_dir .. "/lua/pack.lua")
 end, "Edit plugins")
+
+map("n", "<leader>ch", "<cmd>help wort<cr>", "Config help")
