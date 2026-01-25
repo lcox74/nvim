@@ -15,35 +15,37 @@ mason.setup({
     },
 })
 
--- Configured packages (use :MasonInstallConfigured to install)
-local configured_packages = {
-    "gopls",                        -- Go
-    "lua-language-server",          -- Lua
-    "typescript-language-server",   -- TypeScript/JavaScript
-    "html-lsp",                     -- HTML
-    "css-lsp",                      -- CSS
+-- Packages to ensure are installed
+local ensure_installed = {
+    -- Language servers
+    "bash-language-server",
+    "css-lsp",
+    "docker-language-server",
+    "gopls",
+    "html-lsp",
+    "just-lsp",
+    "lua-language-server",
+    "sqls",
+    "typescript-language-server",
+    "yaml-language-server",
+
+    -- Linters
+    "shellcheck",
+    "sqlfluff",
+
+    -- Formatters
+    "prettier",
+    "shfmt",
 }
 
--- Command to install all configured packages
-vim.api.nvim_create_user_command("MasonInstallConfigured", function()
-    local registry = require("mason-registry")
-    registry.refresh(function()
-        local to_install = {}
-        for _, name in ipairs(configured_packages) do
-            local has_pkg, pkg = pcall(registry.get_package, name)
-            if has_pkg and not pkg:is_installed() then
-                table.insert(to_install, name)
-            end
+-- Auto-install missing packages on startup
+local registry = require("mason-registry")
+registry.refresh(function()
+    for _, name in ipairs(ensure_installed) do
+        local has_pkg, pkg = pcall(registry.get_package, name)
+        if has_pkg and not pkg:is_installed() then
+            vim.notify("Mason: installing " .. name, vim.log.levels.INFO)
+            pkg:install()
         end
-        if #to_install == 0 then
-            vim.notify("All configured packages already installed", vim.log.levels.INFO)
-        else
-            vim.notify("Installing: " .. table.concat(to_install, ", "), vim.log.levels.INFO)
-            for _, name in ipairs(to_install) do
-                local pkg = registry.get_package(name)
-                pkg:install()
-            end
-            vim.notify("Restart Neovim after installation completes for LSP to detect new servers", vim.log.levels.WARN)
-        end
-    end)
-end, { desc = "Install all configured Mason packages" })
+    end
+end)

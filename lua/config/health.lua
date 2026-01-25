@@ -28,25 +28,7 @@ function M.check()
         end
     end
 
-    -- LSP servers (optional)
-    vim.health.start("LSP servers")
-
-    local servers = {
-        { "gopls", "Go" },
-        { "lua-language-server", "Lua" },
-        { "typescript-language-server", "TypeScript/JavaScript" },
-        { "vscode-html-language-server", "HTML" },
-        { "vscode-css-language-server", "CSS" },
-    }
-
-    for _, server in ipairs(servers) do
-        local cmd, lang = server[1], server[2]
-        if vim.fn.executable(cmd) == 1 then
-            vim.health.ok(cmd .. " - " .. lang)
-        else
-            vim.health.warn(cmd .. " not found - " .. lang .. " LSP disabled")
-        end
-    end
+    vim.health.info("Run :LspHealth to check LSP server status")
 end
 
 return M

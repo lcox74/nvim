@@ -1,5 +1,6 @@
 local host = vim.g.host or {}
 local map = require("core.map").map
+local loader = require("core.loader")
 
 -- Hard disable (host-level)
 if host.disable_lsp then
@@ -80,12 +81,28 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 -- Load and enable LSP servers from servers/ directory
-local servers_path = vim.fn.stdpath("config") .. "/lua/lsp/servers"
-for _, file in ipairs(vim.fn.glob(servers_path .. "/*.lua", false, true)) do
-    local module_name = "lsp.servers." .. vim.fn.fnamemodify(file, ":t:r")
-    local server = require(module_name)
+local servers = {}
+loader.dir("lsp.servers", function(server)
+    table.insert(servers, server)
     if vim.fn.executable(server.cmd) == 1 then
         vim.lsp.config[server.name] = server.config
         vim.lsp.enable(server.name)
     end
-end
+end)
+
+-- Health check command
+vim.api.nvim_create_user_command("LspHealth", function()
+    local lines = { "LSP Server Status:", "" }
+    for _, server in ipairs(servers) do
+        local installed = vim.fn.executable(server.cmd) == 1
+        local status = installed and "[+]" or "[-]"
+        local filetypes = table.concat(server.config.filetypes or {}, ", ")
+        table.insert(lines, string.format("  %s %s (%s)", status, server.name, filetypes))
+        if not installed then
+            table.insert(lines, string.format("      cmd: %s", server.cmd))
+        end
+    end
+    table.insert(lines, "")
+    table.insert(lines, "[+] installed  [-] missing")
+    vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
+end, { desc = "Check LSP server installation status" })

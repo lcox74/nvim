@@ -15,7 +15,10 @@ configs.setup({
         "css",
 
         "bash",
+        "dockerfile",
         "json",
+        "just",
+        "sql",
         "yaml",
         "markdown",
         "markdown_inline",

@@ -55,7 +55,13 @@ Verify your setup with the built-in health check:
 :checkhealth config
 ```
 
-This checks for required tools (`git`, `ripgrep`, `fd`) and shows which LSP servers are available.
+This checks for required tools (`git`, `ripgrep`, `fd`).
+
+To check LSP server status:
+
+```vim
+:LspHealth
+```
 
 ## Installation
 
@@ -64,37 +70,33 @@ git clone https://github.com/lcox74/nvim ~/.config/nvim
 nvim -c "lua vim.pack.update()"
 ```
 
-Then install the configured LSP servers:
-
-```vim
-:MasonInstallConfigured
-```
-
-Restart Neovim after installation completes for LSP to detect the new servers.
+Mason will automatically install any missing LSP servers, linters, and formatters on startup.
 
 ## Adding a Language Server
 
-1. Add the package name to `configured_packages` in `lua/plugins/mason.lua`
-2. Run `:MasonInstallConfigured` to install it
-3. Add to the servers table in `lua/lsp/init.lua`:
+1. Add the Mason package name to `ensure_installed` in `lua/plugins/mason.lua`
+2. Create a server config at `lua/lsp/servers/<name>.lua`:
 
 ```lua
-{ "server_name", {
-    cmd = { "server-binary" },
-    filetypes = { "filetype" },
-    root_markers = { "project.file", ".git" },
-}, "server-binary" },
+return {
+    name = "server_name",
+    cmd = "server-binary",
+    config = {
+        cmd = { "server-binary", "--stdio" },
+        filetypes = { "filetype" },
+        root_markers = { "project.file", ".git" },
+    },
+}
 ```
 
-4. Restart Neovim
-
-For servers needing custom settings, create `lua/lsp/<lang>.lua` and require it instead of inlining the config.
+3. Restart Neovim (Mason auto-installs, server auto-loads)
 
 **Tips:**
 - Run `:Mason` to browse available packages and find the exact package name
-- Check Mason for the exact binary name (some need `--stdio`)
+- Check Mason for the exact binary name (some servers need `--stdio`)
 - Run `:set filetype?` to find the right filetype
 - Use the main project file as root marker with `.git` as fallback
+- Run `:LspHealth` to verify the server is detected
 
 ## Overrides
 

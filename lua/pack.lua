@@ -43,3 +43,6 @@ pack.add({
     -- Colour Scheme
     { src = gh("catppuccin/nvim") },
 })
+
+-- Load plugins from plugins/ directory
+require("core.loader").dir("plugins")
