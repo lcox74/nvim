@@ -4,6 +4,15 @@ My old config kept breaking randomly, so I rebuilt it from scratch. The goal is 
 
 Uses native Neovim features like `vim.pack` and `vim.lsp` wherever possible. Though I am lazy enough to use Mason for managing LSPs.
 
+## Features
+
+- **Completion**: nvim-cmp with LSP, buffer, path sources + LuaSnip snippets
+- **Status line**: lualine with diagnostics, git diff, and winbar
+- **Git integration**: gitsigns for gutter signs and inline blame
+- **Editing helpers**: autopairs, Comment.nvim
+- **Markdown**: markview.nvim for rendered preview
+- **Native buffer management**: Tab/S-Tab navigation, leader+number to jump
+
 ## Requirements
 
 - **Neovim nightly** (v0.12+ for `vim.pack`)

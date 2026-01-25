@@ -26,11 +26,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
         local bufnr = ev.buf
         local client = vim.lsp.get_client_by_id(ev.data.client_id)
 
-        -- Enable built-in LSP completion
-        if client and client:supports_method("textDocument/completion") then
-            vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
-        end
-
         -- Buffer-local keymap helper
         local function bmap(mode, lhs, rhs, desc)
             map(mode, lhs, rhs, { buffer = bufnr, desc = desc })

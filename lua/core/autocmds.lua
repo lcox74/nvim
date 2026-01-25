@@ -97,3 +97,35 @@ vim.api.nvim_create_autocmd("BufWritePre", {
         vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
     end,
 })
+
+-- Show diagnostic float on cursor hold
+vim.api.nvim_create_autocmd("CursorHold", {
+    desc = "Show diagnostic float on cursor hold",
+    group = augroup("diagnostic-float", { clear = true }),
+    callback = function()
+        local line = vim.api.nvim_win_get_cursor(0)[1] - 1
+        local diagnostics = vim.diagnostic.get(0, { lnum = line })
+        if #diagnostics > 0 then
+            vim.diagnostic.open_float({ focus = false, scope = "line" })
+        end
+    end,
+})
+
+-- Toggle relative line numbers based on mode
+local relative_numbers_group = augroup("relative-numbers", { clear = true })
+
+vim.api.nvim_create_autocmd("InsertEnter", {
+    desc = "Use absolute line numbers in insert mode",
+    group = relative_numbers_group,
+    callback = function()
+        vim.opt.relativenumber = false
+    end,
+})
+
+vim.api.nvim_create_autocmd("InsertLeave", {
+    desc = "Use relative line numbers in normal mode",
+    group = relative_numbers_group,
+    callback = function()
+        vim.opt.relativenumber = true
+    end,
+})

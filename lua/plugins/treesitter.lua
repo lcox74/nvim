@@ -18,6 +18,7 @@ configs.setup({
         "json",
         "yaml",
         "markdown",
+        "markdown_inline",
     },
 
     auto_install = false, -- Run :TSUpdate manually after adding new parsers
