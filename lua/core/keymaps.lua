@@ -36,7 +36,6 @@ map("i", "<C-space>", function()
     vim.api.nvim_feedkeys(trigger, "n", false)
 end, "Trigger LSP completion")
 
-
 -- Stay in visual mode after indenting
 map("v", "<", "<gv", "Indent left, stay in visual")
 map("v", ">", ">gv", "Indent right, stay in visual")

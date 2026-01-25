@@ -1,6 +1,6 @@
 local pack = vim.pack
 
-local gh = function(x) return 'https://github.com/' .. x end
+local gh = function(x) return "https://github.com/" .. x end
 
 pack.add({
     -- Navigation

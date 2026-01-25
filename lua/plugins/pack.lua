@@ -15,6 +15,7 @@ local function get_package_list()
             path = pkg.path,
         })
     end
+
     table.sort(list, function(a, b) return a.name < b.name end)
     return list
 end

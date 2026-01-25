@@ -1,5 +1,6 @@
 local M = {}
 
+
 function M.check()
     vim.health.start("nvim-config")
 
@@ -30,5 +31,6 @@ function M.check()
 
     vim.health.info("Run :LspHealth to check LSP server status")
 end
+
 
 return M

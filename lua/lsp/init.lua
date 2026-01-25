@@ -102,6 +102,7 @@ vim.api.nvim_create_user_command("LspHealth", function()
             table.insert(lines, string.format("      cmd: %s", server.cmd))
         end
     end
+
     table.insert(lines, "")
     table.insert(lines, "[+] installed  [-] missing")
     vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
