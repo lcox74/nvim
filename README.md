@@ -1,6 +1,6 @@
-# Neovim Config
+# Wort
 
-My old config kept breaking randomly, so I rebuilt it from scratch. The goal is simple: explicit, predictable, and portable. No plugin frameworks, no auto-installers, no magic. If a tool is missing, things just gracefully skip it instead of exploding.
+Personal Neovim configuration. My old config kept breaking randomly, so I rebuilt it from scratch. The goal is simple: explicit, predictable, and portable. No plugin frameworks, no auto-installers, no magic. If a tool is missing, things just gracefully skip it instead of exploding.
 
 Uses native Neovim features like `vim.pack` and `vim.lsp` wherever possible. Though I am lazy enough to use Mason for managing LSPs.
 
