@@ -1,3 +1,5 @@
+-- Merged over nvim-lspconfig's gopls defaults (cmd, filetypes, root markers)
+
 -- Auto-organize imports on save
 vim.api.nvim_create_autocmd("BufWritePre", {
     group = vim.api.nvim_create_augroup("GoOrganizeImports", { clear = true }),
@@ -26,22 +28,15 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 return {
-    name = "gopls",
-    cmd = "gopls",
-    config = {
-        cmd = { "gopls" },
-        filetypes = { "go", "gomod", "gowork", "gotmpl" },
-        root_markers = { "go.mod", ".git" },
-        settings = {
-            gopls = {
-                gofumpt = true,
-                staticcheck = true,
-                completeUnimported = true,
-                usePlaceholders = true,
-                analyses = {
-                    unusedparams = true,
-                    shadow = true,
-                },
+    settings = {
+        gopls = {
+            gofumpt = true,
+            staticcheck = true,
+            completeUnimported = true,
+            usePlaceholders = true,
+            analyses = {
+                unusedparams = true,
+                shadow = true,
             },
         },
     },

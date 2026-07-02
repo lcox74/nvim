@@ -1,11 +1,14 @@
 local host = vim.g.host or {}
 local map = require("lib.map").map
-local loader = require("lib.loader")
 
 -- Hard disable (host-level)
 if host.disable_lsp then
     return
 end
+
+-- Server installation and enabling is handled by mason-lspconfig (see
+-- lua/plugins/mason.lua). Server configs come from nvim-lspconfig, merged
+-- with per-server overrides in <config>/lsp/<name>.lua.
 
 -- Diagnostic configuration
 vim.diagnostic.config({
@@ -66,44 +69,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
             bmap("n", "<leader>ws", vim.lsp.buf.workspace_symbol, "Workspace symbols")
         end
 
-        -- Formatting
-        bmap("n", "<leader>f", vim.lsp.buf.format, "Format buffer")
-
         -- Inlay hints toggle
         bmap("n", "<leader>ih", function()
             vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
         end, "Toggle inlay hints")
 
-        -- Hover and signature help
-        bmap("n", "K", vim.lsp.buf.hover, "Hover documentation")
-        bmap("i", "<C-s>", vim.lsp.buf.signature_help, "Signature help")
+        -- Hover (K) and signature help (i_CTRL-S) are Neovim defaults
     end,
 })
-
--- Load and enable LSP servers from servers/ directory
-local servers = {}
-loader.dir("lsp.servers", function(server)
-    table.insert(servers, server)
-    if vim.fn.executable(server.cmd) == 1 then
-        vim.lsp.config[server.name] = server.config
-        vim.lsp.enable(server.name)
-    end
-end)
-
--- Health check command
-vim.api.nvim_create_user_command("LspHealth", function()
-    local lines = { "LSP Server Status:", "" }
-    for _, server in ipairs(servers) do
-        local installed = vim.fn.executable(server.cmd) == 1
-        local status = installed and "[+]" or "[-]"
-        local filetypes = table.concat(server.config.filetypes or {}, ", ")
-        table.insert(lines, string.format("  %s %s (%s)", status, server.name, filetypes))
-        if not installed then
-            table.insert(lines, string.format("      cmd: %s", server.cmd))
-        end
-    end
-
-    table.insert(lines, "")
-    table.insert(lines, "[+] installed  [-] missing")
-    vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
-end, { desc = "Check LSP server installation status" })

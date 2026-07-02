@@ -8,7 +8,7 @@ autocmd("TextYankPost", {
     desc = "Highlight when yanking (copying) text",
     group = "yank-highlight",
     callback = function()
-        vim.highlight.on_yank({ timeout = 150 })
+        vim.hl.on_yank({ timeout = 150 })
     end,
 })
 
@@ -20,6 +20,13 @@ autocmd("BufWritePre", {
     callback = function(ev)
         local host = vim.g.host or {}
         if host.disable_format then
+            return
+        end
+
+        -- Prefer conform's formatters, falling back to LSP formatting
+        local ok, conform = pcall(require, "conform")
+        if ok then
+            conform.format({ bufnr = ev.buf, timeout_ms = 3000, lsp_format = "fallback" })
             return
         end
 
@@ -87,7 +94,13 @@ augroup("trim-whitespace", { clear = true })
 autocmd("BufWritePre", {
     desc = "Trim trailing whitespace on save",
     group = "trim-whitespace",
-    callback = function()
+    callback = function(ev)
+        -- Trailing whitespace is meaningful in these filetypes
+        local ft = vim.bo[ev.buf].filetype
+        if ft == "markdown" or ft == "diff" or ft == "gitsendemail" then
+            return
+        end
+
         local save_cursor = vim.fn.getpos(".")
         vim.cmd([[%s/\s\+$//e]])
         vim.fn.setpos(".", save_cursor)
@@ -109,28 +122,18 @@ autocmd("BufWritePre", {
     end,
 })
 
--- Show diagnostic float on cursor hold
-augroup("diagnostic-float", { clear = true })
-autocmd("CursorHold", {
-    desc = "Show diagnostic float on cursor hold",
-    group = "diagnostic-float",
-    callback = function()
-        local line = vim.api.nvim_win_get_cursor(0)[1] - 1
-        local diagnostics = vim.diagnostic.get(0, { lnum = line })
-        if #diagnostics > 0 then
-            vim.diagnostic.open_float({ focus = false, scope = "line" })
-        end
-    end,
-})
-
 -- Toggle relative line numbers based on mode
 augroup("relative-numbers", { clear = true })
 
+-- Only touch the current window, and skip special windows (telescope
+-- prompt, neo-tree, etc.) so their settings don't get clobbered
 autocmd("InsertEnter", {
     desc = "Use absolute line numbers in insert mode",
     group = "relative-numbers",
     callback = function()
-        vim.opt.relativenumber = false
+        if vim.bo.buftype == "" and vim.wo.number then
+            vim.wo.relativenumber = false
+        end
     end,
 })
 
@@ -138,6 +141,8 @@ autocmd("InsertLeave", {
     desc = "Use relative line numbers in normal mode",
     group = "relative-numbers",
     callback = function()
-        vim.opt.relativenumber = true
+        if vim.bo.buftype == "" and vim.wo.number then
+            vim.wo.relativenumber = true
+        end
     end,
 })

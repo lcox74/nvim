@@ -9,42 +9,18 @@ Uses native Neovim features like `vim.pack` and `vim.lsp` wherever possible. Tho
 - **Completion**: nvim-cmp with LSP, buffer, path sources + LuaSnip snippets
 - **Status line**: lualine with diagnostics, git diff, and winbar
 - **Git integration**: gitsigns for gutter signs and inline blame
-- **Editing helpers**: autopairs, Comment.nvim
-- **Markdown**: markview.nvim for rendered preview
-- **Native buffer management**: Tab/S-Tab navigation, leader+number to jump
+- **Editing helpers**: autopairs, native `gc` commenting
+- **Buffer line**: barbar with Tab/S-Tab navigation, leader+number to jump
+- **File tree**: neo-tree (`<leader>e` sidebar, `<leader>pv` full window)
 
 ## Requirements
 
-- **Neovim nightly** (v0.12+ for `vim.pack`)
 - **git**, **ripgrep**, **fd**
+- **tree-sitter CLI** and a C compiler (treesitter parsers are compiled from source)
 
 ```sh
 # macOS
-brew install ripgrep fd
-brew install neovim --HEAD
-```
-
-LSP servers and formatters are detected at runtime - install whatever you need externally (or use Mason inside Neovim).
-
-To install for debian is a mild pain because of the nightly build, though this
-should be handled better shortly.
-
-```sh
-# Get the host ready to install nvim
-apt update
-apt install -y git curl build-essential unzip ripgrep fd-find nodejs npm
-
-# Alias fd
-echo 'alias fd=fdfind' >> ~/.bashrc
-source ~/.bashrc
-
-# Install nvim
-curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.appimage
-chmod u+x nvim-linux-x86_64.appimage
-./nvim-linux-x86_64.appimage --appimage-extract
-mv squashfs-root /opt/nvim
-ln -s /opt/nvim/usr/bin/nvim /usr/local/bin/nvim
-rm nvim-linux-x86_64.appimage
+brew install neovim ripgrep fd tree-sitter-cli
 ```
 
 ## Health Check
@@ -55,12 +31,12 @@ Verify your setup with the built-in health check:
 :checkhealth wort
 ```
 
-This checks for required tools (`git`, `ripgrep`, `fd`).
+This checks for required tools (`git`, `ripgrep`, `fd`, `tree-sitter`, `cc`).
 
 To check LSP server status:
 
 ```vim
-:LspHealth
+:checkhealth vim.lsp
 ```
 
 ## Installation
@@ -72,31 +48,38 @@ nvim -c "lua vim.pack.update()"
 
 Mason will automatically install any missing LSP servers, linters, and formatters on startup.
 
+## Updating
+
+```vim
+:UpdateAll
+```
+
+Updates everything in one go (also on `<leader>cu`): plugins via `vim.pack` (opens a review buffer, `:w` to apply or `:q` to abort), Mason packages, and treesitter parsers. `:PackUpdate` updates just the plugins.
+
 ## Adding a Language Server
 
-1. Add the Mason package name to `ensure_installed` in `lua/plugins/mason.lua`
-2. Create a server config at `lua/lsp/servers/<name>.lua`:
+Add the lspconfig server name to `ensure_installed` in `lua/plugins/mason.lua`. That's it - mason-lspconfig installs the server and enables it with the config that ships in nvim-lspconfig.
+
+To override or extend a server's defaults (settings, cmd, etc.), create `lsp/<name>.lua` in this config's root. It is merged over the nvim-lspconfig defaults by native `vim.lsp.config`:
 
 ```lua
+-- ~/.config/nvim/lsp/gopls.lua
 return {
-    name = "server_name",
-    cmd = "server-binary",
-    config = {
-        cmd = { "server-binary", "--stdio" },
-        filetypes = { "filetype" },
-        root_markers = { "project.file", ".git" },
+    settings = {
+        gopls = { gofumpt = true },
     },
 }
 ```
 
-3. Restart Neovim (Mason auto-installs, server auto-loads)
-
 **Tips:**
-- Run `:Mason` to browse available packages and find the exact package name
-- Check Mason for the exact binary name (some servers need `--stdio`)
-- Run `:set filetype?` to find the right filetype
-- Use the main project file as root marker with `.git` as fallback
-- Run `:LspHealth` to verify the server is detected
+
+- Server names are lspconfig names (`lua_ls`, not `lua-language-server`); browse them with `:h lspconfig-all`
+- Run `:checkhealth vim.lsp` to see enabled servers and attach status
+- Formatters and linters are plain Mason package names in the same file; wire formatters up per filetype in `lua/plugins/conform.lua`
+
+## Formatting
+
+Format on save runs conform.nvim formatters (prettier, shfmt, ...) per filetype, falling back to LSP formatting when no formatter is configured. `<leader>f` formats manually. Disable format on save per machine with `vim.g.host = { disable_format = true }` in `local.lua`.
 
 ## Overrides
 
@@ -110,13 +93,15 @@ vim.g.host = {
 }
 ```
 
-**`.nvim.lua`** - per-project settings, lives in your project root:
+**`.nvim.lua`** - per-project settings, loaded via the native `'exrc'` option. Neovim finds it in the project directory or any parent, and prompts to trust it on first load (manage with `:trust`):
 
 ```lua
 -- /path/to/project/.nvim.lua
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
-vim.lsp.config.gopls.settings = {
-    gopls = { buildFlags = { "-tags=integration" } },
-}
+vim.lsp.config("gopls", {
+    settings = {
+        gopls = { buildFlags = { "-tags=integration" } },
+    },
+})
 ```

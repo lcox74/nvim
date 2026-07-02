@@ -8,6 +8,21 @@ telescope.setup({
         prompt_prefix = "> ",
         sorting_strategy = "ascending",
         layout_strategy = "horizontal",
+
+        -- Open picks in a normal window, never a special one (e.g. the
+        -- neo-tree sidebar), falling back to the current window
+        get_selection_window = function()
+            if vim.bo.buftype == "" then
+                return vim.api.nvim_get_current_win()
+            end
+            for _, win in ipairs(vim.api.nvim_list_wins()) do
+                local buf = vim.api.nvim_win_get_buf(win)
+                if vim.bo[buf].buftype == "" then
+                    return win
+                end
+            end
+            return 0
+        end,
     },
 })
 

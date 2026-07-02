@@ -15,25 +15,35 @@ mason.setup({
     },
 })
 
--- Packages to ensure are installed
-local ensure_installed = {
-    -- Language servers
-    "bash-language-server",
-    "css-lsp",
-    "docker-language-server",
-    "gopls",
-    "html-lsp",
-    "just-lsp",
-    "lua-language-server",
-    "sqls",
-    "typescript-language-server",
-    "yaml-language-server",
+-- Language servers (lspconfig names): mason-lspconfig installs missing ones
+-- and enables every installed server via vim.lsp.enable, using the configs
+-- from nvim-lspconfig merged with any overrides in <config>/lsp/<name>.lua
+local ok_mlsp, mason_lspconfig = pcall(require, "mason-lspconfig")
+if ok_mlsp then
+    mason_lspconfig.setup({
+        ensure_installed = {
+            "bashls",
+            "cssls",
+            "docker_language_server",
+            "gopls",
+            "html",
+            "just",
+            "lua_ls",
+            "sqls",
+            "ts_ls",
+            "yamlls",
+        },
+        automatic_enable = true,
+    })
+end
 
+-- Non-LSP tools (mason package names)
+local ensure_installed = {
     -- Linters
-    "shellcheck",
+    "shellcheck", -- picked up by bashls automatically
     "sqlfluff",
 
-    -- Formatters
+    -- Formatters (run by conform.nvim)
     "prettier",
     "shfmt",
 }

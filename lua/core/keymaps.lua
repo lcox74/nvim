@@ -5,9 +5,6 @@ local map = require("lib.map").map
 -- Disable accidental Ex mode
 map("n", "Q", "<nop>", "Disable Q command")
 
--- File Explorer
-map("n", "<leader>pv", vim.cmd.Ex, "Open file explorer")
-
 -- Paste without losing original value in visual mode
 map("x", "<leader>p", "\"_dP", "Paste without overwriting register")
 
@@ -30,18 +27,22 @@ map("n", "<C-k>", ":m .-2<CR>==", "Move line up")
 map("v", "<C-j>", ":m '>+1<CR>gv=gv", "Move selection down")
 map("v", "<C-k>", ":m '<-2<CR>gv=gv", "Move selection up")
 
--- Use CTRL-space to trigger LSP completion
-map("i", "<C-space>", function()
-    local trigger = vim.api.nvim_replace_termcodes("<C-x><C-o>", true, false, true)
-    vim.api.nvim_feedkeys(trigger, "n", false)
-end, "Trigger LSP completion")
-
 -- Stay in visual mode after indenting
 map("v", "<", "<gv", "Indent left, stay in visual")
 map("v", ">", ">gv", "Indent right, stay in visual")
 
 -- Clear search highlight
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", "Clear search highlight")
+
+-- Format buffer (conform formatters, LSP fallback)
+map("n", "<leader>f", function()
+    local ok, conform = pcall(require, "conform")
+    if ok then
+        conform.format({ timeout_ms = 3000, lsp_format = "fallback" })
+    else
+        vim.lsp.buf.format({ timeout_ms = 3000 })
+    end
+end, "Format buffer")
 
 -- Quickfix navigation
 map("n", "<leader>qn", "<cmd>cnext<CR>", "Next quickfix")

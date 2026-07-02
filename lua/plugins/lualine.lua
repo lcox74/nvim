@@ -10,13 +10,17 @@ lualine.setup({
         theme = "auto",
         component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
+        -- Neo-tree draws its own winbar (the source selector tabs)
+        disabled_filetypes = {
+            winbar = { "neo-tree" },
+        },
     },
     sections = {
         lualine_a = { "mode" },
         lualine_b = { "diff", "diagnostics" },
         lualine_c = { "filename" },
         lualine_x = { "filetype" },
-        lualine_y = { "progrss" },
+        lualine_y = { "progress" },
         lualine_z = { "location" },
     },
     winbar = {

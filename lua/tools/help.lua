@@ -7,21 +7,25 @@ local INDENT = "  " -- 2 spaces (vimdoc standard)
 -- Source file to friendly group name mapping for keymaps
 local keymap_group_names = {
     ["lua/core/keymaps.lua"] = "Core",
-    ["lua/core/buffers.lua"] = "Buffers",
+    ["lua/plugins/barbar.lua"] = "Buffers",
+    ["lua/plugins/neotree.lua"] = "File Tree",
     ["lua/lsp/init.lua"] = "LSP",
     ["lua/plugins/telescope.lua"] = "Telescope",
     ["lua/plugins/gitsigns.lua"] = "Git Signs",
     ["lua/plugins/pack.lua"] = "Package Manager",
+    ["lua/tools/update.lua"] = "Updates",
 }
 
 -- Order for keymap groups (unlisted appear at end)
 local keymap_group_order = {
     "lua/core/keymaps.lua",
-    "lua/core/buffers.lua",
+    "lua/plugins/barbar.lua",
+    "lua/plugins/neotree.lua",
     "lua/lsp/init.lua",
     "lua/plugins/telescope.lua",
     "lua/plugins/gitsigns.lua",
     "lua/plugins/pack.lua",
+    "lua/tools/update.lua",
 }
 
 

@@ -2,16 +2,26 @@ local pack = vim.pack
 
 local gh = function(x) return "https://github.com/" .. x end
 
+-- Barbar configures itself in plugins/barbar.lua
+vim.g.barbar_auto_setup = false
+
 pack.add({
     -- Navigation
     { src = gh("nvim-lua/plenary.nvim") },
     { src = gh("nvim-telescope/telescope.nvim") },
+    { src = gh("MunifTanjim/nui.nvim") },
+    { src = gh("nvim-neo-tree/neo-tree.nvim"), version = "v3.x" },
 
     -- Syntax
-    { src = gh("nvim-treesitter/nvim-treesitter"), build = ":TSUpdate" },
+    { src = gh("nvim-treesitter/nvim-treesitter") },
 
-    -- LSP Package Manager
+    -- LSP
+    { src = gh("neovim/nvim-lspconfig") },
     { src = gh("mason-org/mason.nvim") },
+    { src = gh("mason-org/mason-lspconfig.nvim") },
+
+    -- Formatting
+    { src = gh("stevearc/conform.nvim") },
 
     -- Completion
     { src = gh("hrsh7th/nvim-cmp") },
@@ -29,10 +39,6 @@ pack.add({
 
     -- Editing
     { src = gh("windwp/nvim-autopairs") },
-    { src = gh("numToStr/Comment.nvim") },
-
-    -- Markdown
-    { src = gh("OXY2DEV/markview.nvim") },
 
     -- Icons (used by lualine, telescope, etc.)
     { src = gh("nvim-tree/nvim-web-devicons") },
@@ -40,8 +46,11 @@ pack.add({
     -- Status line
     { src = gh("nvim-lualine/lualine.nvim") },
 
+    -- Buffer line
+    { src = gh("romgrk/barbar.nvim"), version = vim.version.range("1.x") },
+
     -- Colour Scheme
-    { src = gh("catppuccin/nvim") },
+    { src = gh("catppuccin/nvim"), name = "catppuccin" },
 })
 
 -- Load plugins from plugins/ directory

@@ -1,7 +1,3 @@
-if not vim.pack then
-    return
-end
-
 local map = require("lib.map").map
 
 -- Helper: get formatted package list

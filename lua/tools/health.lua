@@ -18,6 +18,8 @@ function M.check()
     { "git", "Version control" },
     { "rg", "Telescope live grep (ripgrep)" },
     { "fd", "Telescope find files" },
+    { "tree-sitter", "Treesitter parser installs (tree-sitter CLI)" },
+    { "cc", "Treesitter parser installs (C compiler)" },
   }
 
   for _, tool in ipairs(required) do
@@ -29,7 +31,7 @@ function M.check()
     end
   end
 
-  vim.health.info("Run :LspHealth to check LSP server status")
+  vim.health.info("Run :checkhealth vim.lsp to check LSP server status")
 end
 
 
